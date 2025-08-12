@@ -1,0 +1,35 @@
+2025-07-17 10:19:20,113 - INFO - Starting test: test_financial_advice_response
+2025-07-17 10:19:26,422 - INFO - Opened Chrome WebDriver
+2025-07-17 10:19:26,620 - ERROR - Test failed: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x000000010f59ca28 chromedriver + 6167080
+1   chromedriver                        0x000000010f593fda chromedriver + 6131674
+2   chromedriver                        0x000000010f020e00 chromedriver + 417280
+3   chromedriver                        0x000000010f017de2 chromedriver + 380386
+4   chromedriver                        0x000000010f008fa8 chromedriver + 319400
+5   chromedriver                        0x000000010f00acc0 chromedriver + 326848
+6   chromedriver                        0x000000010f00932b chromedriver + 320299
+7   chromedriver                        0x000000010f008d40 chromedriver + 318784
+8   chromedriver                        0x000000010f008a4b chromedriver + 318027
+9   chromedriver                        0x000000010f006904 chromedriver + 309508
+10  chromedriver                        0x000000010f0070ca chromedriver + 311498
+11  chromedriver                        0x000000010f024379 chromedriver + 430969
+12  chromedriver                        0x000000010f0c0cf5 chromedriver + 1072373
+13  chromedriver                        0x000000010f098c92 chromedriver + 908434
+14  chromedriver                        0x000000010f0c010c chromedriver + 1069324
+15  chromedriver                        0x000000010f098a63 chromedriver + 907875
+16  chromedriver                        0x000000010f0650c7 chromedriver + 696519
+17  chromedriver                        0x000000010f065d31 chromedriver + 699697
+18  chromedriver                        0x000000010f55abe0 chromedriver + 5897184
+19  chromedriver                        0x000000010f55ec59 chromedriver + 5913689
+20  chromedriver                        0x000000010f5358f2 chromedriver + 5744882
+21  chromedriver                        0x000000010f55f5df chromedriver + 5916127
+22  chromedriver                        0x000000010f5245c4 chromedriver + 5674436
+23  chromedriver                        0x000000010f5815b8 chromedriver + 6055352
+24  chromedriver                        0x000000010f581780 chromedriver + 6055808
+25  chromedriver                        0x000000010f593b71 chromedriver + 6130545
+26  libsystem_pthread.dylib             0x00007ff801bea4e1 _pthread_start + 125
+27  libsystem_pthread.dylib             0x00007ff801be5f6b thread_start + 15
+
+2025-07-17 10:19:26,699 - INFO - Closed Chrome WebDriver

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>AI Cooking Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+        }
+
+        #ai-response {
+            background: #f0f0f8;
+            border: 1px solid #ccc;
+            padding: 1em;
+            margin-top: 1em;
+        }
+
+        form {
+            margin-bottom: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>AI Cooking Assistant</h1>
+    <form method="POST">
+        <label for="user-input">Tell me your ingredients, equipment, or any dietary restrictions:</label><br>
+        <input type="text" id="user-input" name="user_input" style="width: 350px;"
+            placeholder="E.g., chicken, carrots, Instant Pot">
+        <button type="submit">Ask</button>
+    </form>
+    {% if response %}
+    <div id="ai-response">
+        <strong>AI Response:</strong><br>
+        {{ response }}
+    </div>
+    {% endif %}
+    <hr>
+    <a href="/results">View Automation Test Results</a>
+</body>
+
+</html>
