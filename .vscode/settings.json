@@ -1,0 +1,12 @@
+{
+  "python.defaultInterpreterPath": "venv\\Scripts\\python.exe",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "unit_tests",
+    "selenium_tests",
+    "playwright_tests"
+  ],
+  "python.envFile": "${workspaceFolder}\\.env",
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
+}

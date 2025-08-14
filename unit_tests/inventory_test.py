@@ -1,21 +1,28 @@
+import pytest
 from inventory import Inventory
 
-# Step 1: Create a new inventory and add items
-qa_inventory = Inventory()
+@pytest.fixture
+def qa_inventory():
+    inv = Inventory()
+    inv.load_from_file("my_inventory.json")
+    return inv
 
-# Try loading existing data from file first
-qa_inventory.load_from_file("my_inventory.json")
+def test_add_items(qa_inventory):
+    qa_inventory.add_item("Test case suite", "QA Automation", 5)
+    qa_inventory.add_item("Bug report", "Documentation", 1)
+    items = [item["name"] for item in qa_inventory.items]
+    assert "Test case suite" in items
+    assert "Bug report" in items
 
-# Add new items
-qa_inventory.add_item("Test case suite", "QA Automation", 5)
-qa_inventory.add_item("Bug report", "Documentation", 1)
+def test_edit_item_quantity(qa_inventory):
+    qa_inventory.add_item("Test case suite", "QA Automation", 5)
+    qa_inventory.edit_item("Test case suite", 10)
+    item = next(i for i in qa_inventory.items if i["name"] == "Test case suite")
+    assert item["quantity"] == 10
 
-# List current items
-qa_inventory.list_items()
-
-# Edit an item's quantity
-qa_inventory.edit_item("Test case suite", 10)
-
-
-# Save to file
-qa_inventory.save_to_file("my_inventory.json")
+def test_save_to_file(tmp_path):
+    inv = Inventory()
+    inv.add_item("Temporary item", "Temp", 1)
+    file_path = tmp_path / "temp_inventory.json"
+    inv.save_to_file(file_path)
+    assert file_path.exists()

@@ -149,6 +149,9 @@ venv.bak/
 .spyderproject
 .spyproject
 
+# Reports and test artifacts
+reports/
+
 # Rope project settings
 .ropeproject
 
