@@ -1,5 +1,5 @@
 import pytest
-from generate_response_logic import generate_response
+from logic.generate_response_logic import generate_response
 
 def test_known_ingredients():
     result = generate_response("I have chicken and potatoes.")

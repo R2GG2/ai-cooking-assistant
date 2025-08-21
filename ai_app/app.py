@@ -12,18 +12,17 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "your_secret_key")  # TODO: set in .env for production
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# ---- Utility paths ----
-# Repo root = parent of this file's folder (ai_app/)
-REPO_ROOT = Path(__file__).resolve().parents[1]
-TEST_PAGES_DIR = REPO_ROOT / "test_pages"
+# ---- Corrected path to static_site ----
+# This will correctly resolve to: <project_root>/static_site/
+TEST_PAGES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 
-
+# ---- Session clearing route (for debugging/reset) ----
 @app.route("/clear_session", methods=["POST"])
 def clear_session():
     session.clear()
     return "Session cleared", 200
 
-
+# ---- Main entry point ----
 @app.route("/", methods=["GET", "POST"])
 def index():
     # Initialize session keys if missing (mutate, don't reassign)
@@ -39,15 +38,15 @@ def index():
         print(f"DEBUG: Received user_input: '{user_input}'")
         print(f"DEBUG: Session before generate_response: {dict(session)}")
 
-        # Pass the session so generate_response can mutate it; do not reassign session
+        # Pass session to the assistant logic
         response, _ = generate_response(user_input, session)
-        session.modified = True  # ensure Flask persists the mutation
+        session.modified = True  # Ensure session mutations are saved
 
         print(f"DEBUG: Session after generate_response: {dict(session)}")
 
     return render_template("index.html", response=response)
 
-
+# ---- Result history route ----
 @app.route("/results")
 def show_results():
     results_file = "test_results.json"
@@ -57,7 +56,7 @@ def show_results():
     else:
         results = []
 
-    # Normalize keys for template robustness
+    # Normalize result keys for robustness
     for r in results:
         r.setdefault("error", "")
         r.setdefault("test_name", "Unknown Test")
@@ -67,15 +66,12 @@ def show_results():
 
     return render_template("results.html", results=results)
 
-
-# ---- Serve static test page for Selenium ----
+# ---- Serve a static test page for Selenium UI testing ----
 @app.route("/test_page.html")
 def test_page():
-    # Serve test_pages/test_page.html at http://127.0.0.1:<PORT>/test_page.html
     return send_from_directory(TEST_PAGES_DIR, "test_page.html")
 
-
+# ---- Run the app ----
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5000"))
-    # Bind to localhost for local testing; set FLASK_RUN_HOST in .env if needed
     app.run(host="127.0.0.1", port=port, debug=True, use_reloader=True)
