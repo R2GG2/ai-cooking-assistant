@@ -14,7 +14,9 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # ---- Corrected path to static_site ----
 # This will correctly resolve to: <project_root>/static_site/
-TEST_PAGES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
+TEST_PAGES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static_site"))
+print(f"TEST_PAGES_DIR is set to: {TEST_PAGES_DIR}")
+
 
 # ---- Session clearing route (for debugging/reset) ----
 @app.route("/clear_session", methods=["POST"])
