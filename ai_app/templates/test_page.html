@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Local Test Page</title>
+</head>
+
+<body>
+  <h1>Local Test Page for Selenium</h1>
+
+  <input id="user-input" type="text" placeholder="Type a message…" />
+  <button id="send-btn">Send</button>
+
+  <div id="ai-response" style="margin-top:1rem; white-space:pre-wrap;"></div>
+
+  <script>
+    const input = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const resp = document.getElementById('ai-response');
+
+    async function sendMessage(text) {
+      try {
+        const r = await fetch('/api/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await r.json();
+        resp.textContent = data.reply || '(no response)';
+      } catch (err) {
+        resp.textContent = 'Error: ' + err.message;
+      }
+    }
+
+    sendBtn.addEventListener('click', () => {
+      const t = input.value.trim();
+      if (t) { sendMessage(t); input.value = ''; }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const t = input.value.trim();
+        if (t) { sendMessage(t); input.value = ''; }
+      }
+    });
+  </script>
+</body>
+
+</html>

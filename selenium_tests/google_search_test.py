@@ -1,28 +1,12 @@
+# selenium_tests/google_search_test.py
+import os
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import os
-import time
-import requests
-
-def wait_for_server(url, timeout=10):
-    start_time = time.time()
-    while True:
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                break  # Server is up!
-        except requests.exceptions.ConnectionError:
-            pass
-        if time.time() - start_time > timeout:
-            raise TimeoutError(f"Server at {url} did not respond in {timeout} seconds.")
-        time.sleep(1)  # Try again in 1 second
-
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:5000")
 
@@ -32,33 +16,33 @@ def driver():
     yield driver
     driver.quit()
 
-def test_search_input(driver):
-    wait_for_server(f"{BASE_URL}/test_page.html")
+def test_search_input(step, driver):
+    """Search input echoes text into the AI response area on submit."""
+    message = "AI QA automation with Python"
 
-     # Try to load the page with retry logic
-    for _ in range(3):
-        try:
-            driver.get(f"{BASE_URL}/test_page.html")
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "user-input"))
-            )
-            break
-        except Exception as e:
-            time.sleep(2)
-    else:
-        pytest.fail("Page did not load after 3 retries")
-    # Open the test page
-    driver.get(f"{BASE_URL}/test_page.html")
+    # Step 1: Open the page and see input
+    with step("Open test page", expected="Input box is visible", driver=driver) as s:
+        driver.get(f"{BASE_URL}/test_page.html")
+        box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "user-input"))
+        )
+        s.actual = f"title='{driver.title}', input_displayed={box.is_displayed()}"
+        assert box.is_displayed(), "Expected #user-input to be visible"
 
-    # Find the search box and type query
-    search_box = driver.find_element(By.ID, "user-input")
-    search_box.send_keys("AI QA automation with Python")
-    search_box.send_keys(Keys.RETURN)
+    # Step 2: Type message
+    with step("Enter text", expected=f"Input value is '{message}'", driver=driver) as s:
+        box = driver.find_element(By.ID, "user-input")
+        box.clear()
+        box.send_keys(message)
+        s.actual = f"value='{box.get_attribute('value')}'"
+        assert box.get_attribute("value") == message
 
-    # Wait for the result (make sure the element is still interactable)
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "user-input"))
-    )
-
-    # Optional: Take a screenshot
-    driver.save_screenshot("selenium_tests/search_results.png")
+    # Step 3: Submit and verify echo
+    with step("Submit form", expected="AI echoes the same message", driver=driver) as s:
+        driver.find_element(By.ID, "submit-btn").click()
+        resp_el = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "ai-response"))
+        )
+        resp_text = resp_el.text.strip()
+        s.actual = f"ai-response='{resp_text}'"
+        assert message.lower() in resp_text.lower(), "AI did not echo the submitted text"
