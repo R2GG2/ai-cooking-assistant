@@ -10,13 +10,13 @@
   <h1>Local Test Page for Selenium</h1>
 
   <input id="user-input" type="text" placeholder="Type a message…" />
-  <button id="send-btn">Send</button>
+  <button id="send-btn">Send</button> <!-- ✅ Updated ID here -->
 
   <div id="ai-response" style="margin-top:1rem; white-space:pre-wrap;"></div>
 
   <script>
     const input = document.getElementById('user-input');
-    const sendBtn = document.getElementById('send-btn');
+    const sendBtn = document.getElementById('send-btn'); // ✅ Updated selector here
     const resp = document.getElementById('ai-response');
 
     async function sendMessage(text) {

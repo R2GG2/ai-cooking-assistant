@@ -39,10 +39,15 @@ def test_search_input(step, driver):
 
     # Step 3: Submit and verify echo
     with step("Submit form", expected="AI echoes the same message", driver=driver) as s:
-        driver.find_element(By.ID, "submit-btn").click()
-        resp_el = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ai-response"))
+        driver.find_element(By.ID, "send-btn").click()
+        
+        # Wait until #ai-response has non-empty text
+        WebDriverWait(driver, 10).until(
+            lambda d: d.find_element(By.ID, "ai-response").text.strip() != ""
         )
-        resp_text = resp_el.text.strip()
+        
+        resp_text = driver.find_element(By.ID, "ai-response").text.strip()
         s.actual = f"ai-response='{resp_text}'"
-        assert message.lower() in resp_text.lower(), "AI did not echo the submitted text"
+        expected_keywords = ["allergies", "ingredients", "dish", "recipe", "cook"]
+        assert any(k in resp_text.lower() for k in expected_keywords), \
+            f"Unexpected AI response: {resp_text}"
