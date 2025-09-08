@@ -3,6 +3,9 @@ import sys
 import pathlib
 import pytest
 from dotenv import load_dotenv
+import subprocess
+import time
+import signal
 
 # ---- Load environment early (BASE_URL, etc.) ----
 load_dotenv()
@@ -30,7 +33,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 def driver():
     """Session-scoped Chrome driver managed by webdriver-manager."""
     options = webdriver.ChromeOptions()
-    # Run headless in CI or when HEADLESS=1 in env
     if os.getenv("HEADLESS", "0") == "1":
         options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -42,3 +44,35 @@ def driver():
     )
     yield driver
     driver.quit()
+
+# ---- Auto-start Flask server for UI tests ----
+@pytest.fixture(scope="session", autouse=True)
+def flask_app():
+    """Automatically start the Flask app for testing."""
+    project_root = pathlib.Path("/Users/ginka/Documents/ai-cooking-assistant")
+    app_path = project_root / "ai_app" / "app.py"
+    log_path = project_root / "tests" / "selenium" / "reports" / "flask_server.log"
+
+    print(f"\n[conftest] Starting Flask app from {app_path}...")
+
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    flask_process = subprocess.Popen(
+        ["python", str(app_path)],
+        stdout=open(log_path, "w"),
+        stderr=subprocess.STDOUT,
+        preexec_fn=os.setsid,
+        cwd=str(project_root)
+    )
+
+    time.sleep(2)
+
+    if flask_process.poll() is not None:
+        raise RuntimeError(f"Flask exited early. Logs: {log_path}")
+
+    yield
+
+    print("\n[conftest] Stopping Flask app...")
+    os.killpg(os.getpgid(flask_process.pid), signal.SIGTERM)
+    flask_process.wait()
+

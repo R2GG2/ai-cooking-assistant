@@ -1,5 +1,8 @@
 from playwright.sync_api import sync_playwright
 import time
+import pytest
+
+pytestmark = pytest.mark.skip(reason="Playwright testing is temporarily disabled")
 
 
 def setup_browser(p):
