@@ -32,8 +32,15 @@ test-playwright:
 # Reporting & Test Targets
 # ========================
 
-test:
-	pytest tests/ --html=reports/report.html --self-contained-html && cp reports/report.html reports/report_latest.html
 
+
+.PHONY: test-all test-ui test-playwright test-report clean-reports
+
+# Run full test suite and export HTML report to tests/reports
+test-report:
+	pytest tests/ --html=tests/reports/index.html --self-contained-html
+
+
+# Clean up old test reports
 clean-reports:
-	rm -f reports/*.html
+	rm -rf tests/reports/index.html tests/reports/assets tests/reports/screenshots
