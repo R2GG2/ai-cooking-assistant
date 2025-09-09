@@ -1,12 +1,6 @@
 import pytest
 from inventory import Inventory
 
-@pytest.fixture
-def test_qa_inventory():
-    inv = Inventory()
-    inv.load_from_file("my_inventory.json")
-    return inv
-
 def test_add_items(qa_inventory):
     qa_inventory.add_item("Test case suite", "QA Automation", 5)
     qa_inventory.add_item("Bug report", "Documentation", 1)

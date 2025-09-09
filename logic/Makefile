@@ -27,3 +27,13 @@ test-playwright:
 	$(PYTEST) -m playwright playwright_tests/ \
 	  --html=playwright_tests/reports/playwright_$(TS).html \
 	  --self-contained-html
+
+# ========================
+# Reporting & Test Targets
+# ========================
+
+test:
+	pytest tests/ --html=reports/report.html --self-contained-html && cp reports/report.html reports/report_latest.html
+
+clean-reports:
+	rm -f reports/*.html
