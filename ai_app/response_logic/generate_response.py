@@ -1,5 +1,7 @@
 import re
 from ai_app.response_logic.bias_detection import bias_filter
+from ai_app.response_logic.ingredient_detection import detect_ingredients
+from ai_app.response_logic.equipment_detection import detect_equipment
 
 # --- Global Data ---
 restricted_ingredients = [
