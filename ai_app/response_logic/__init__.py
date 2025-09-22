@@ -1,11 +1,12 @@
-from .bias_detection import bias_filter
-from .ingredient_detection import _detect_ingredients
-from .equipment_detection import _detect_equipment
-from .generate_response import generate_response
+from .bias_logic import bias_filter
+from .ingredient_logic import detect_ingredients
+from .equipment_logic import detect_equipment
+from .response_logic import generate_response
+
 
 __all__ = [
     "bias_filter",
-    "_detect_ingredients",
-    "_detect_equipment",
+    "detect_ingredients",
+    "detect_equipment",
     "generate_response",
 ]

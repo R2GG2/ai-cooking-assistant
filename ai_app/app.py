@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import json
 import base64
 
-from ai_app.response_logic.generate_response import generate_response
+from ai_app.response_logic.response_logic import generate_response
 
 print("🧠 Running:", __file__)
 
