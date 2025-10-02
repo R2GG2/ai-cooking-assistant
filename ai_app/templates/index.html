@@ -24,20 +24,56 @@
 
 <body>
     <h1>AI Cooking Assistant</h1>
-    <form method="POST">
+    <form id="ai-form">
         <label for="user-input">Tell me your ingredients, equipment, or any dietary restrictions:</label><br>
         <input type="text" id="user-input" name="user_input" style="width: 350px;"
             placeholder="E.g., chicken, carrots, Instant Pot">
         <button id="send-btn" type="submit">Ask</button>
     </form>
-    {% if response %}
+
     <div id="ai-response">
         <strong>AI Response:</strong><br>
-        {{ response }}
+        <span id="response-text">Waiting for input...</span>
     </div>
-    {% endif %}
+
     <hr>
     <a href="/results">View Automation Test Results</a>
+
+    <script>
+        document.getElementById("ai-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const userInput = document.getElementById("user-input").value;
+            const responseBox = document.getElementById("response-text");
+            const responseDiv = document.getElementById("ai-response");
+
+            responseBox.innerText = "Thinking...";
+            responseDiv.innerHTML = "<strong>AI Response:</strong><br>Thinking...";
+
+            try {
+                const resp = await fetch("/api/response", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ input: userInput })
+                });
+
+                if (!resp.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await resp.json();
+
+                // Update both the inner span and the container
+                responseBox.innerText = data.response;
+                responseDiv.innerHTML = "<strong>AI Response:</strong><br>" + data.response;
+            } catch (error) {
+                const msg = "⚠️ Error: " + error.message;
+                responseBox.innerText = msg;
+                responseDiv.innerHTML = "<strong>AI Response:</strong><br>" + msg;
+            }
+        });
+    </script>
+
 </body>
 
 </html>

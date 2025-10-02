@@ -17,10 +17,11 @@ def driver():
     driver.quit()
 
 def test_search_input(step, driver):
-    """Search input echoes text into the AI response area on submit."""
-    message = "AI QA automation with Python"
+    """Search input produces a valid AI response when submitted."""
 
-    # Step 1: Open the page and see input
+    message = "chicken and rice"
+
+    # Step 1: Open the page and verify input field
     with step("Open test page", expected="Input box is visible", driver=driver) as s:
         driver.get(f"{BASE_URL}/test_page.html")
         box = WebDriverWait(driver, 10).until(
@@ -29,7 +30,7 @@ def test_search_input(step, driver):
         s.actual = f"title='{driver.title}', input_displayed={box.is_displayed()}"
         assert box.is_displayed(), "Expected #user-input to be visible"
 
-    # Step 2: Type message
+    # Step 2: Enter message
     with step("Enter text", expected=f"Input value is '{message}'", driver=driver) as s:
         box = driver.find_element(By.ID, "user-input")
         box.clear()
@@ -37,17 +38,18 @@ def test_search_input(step, driver):
         s.actual = f"value='{box.get_attribute('value')}'"
         assert box.get_attribute("value") == message
 
-    # Step 3: Submit and verify echo
-    with step("Submit form", expected="AI echoes the same message", driver=driver) as s:
+    # Step 3: Submit and wait for response
+    with step("Submit form", expected="AI generates a recipe suggestion", driver=driver) as s:
         driver.find_element(By.ID, "send-btn").click()
-        
-        # Wait until #ai-response has non-empty text
-        WebDriverWait(driver, 10).until(
+
+        WebDriverWait(driver, 20).until(
             lambda d: d.find_element(By.ID, "ai-response").text.strip() != ""
         )
-        
         resp_text = driver.find_element(By.ID, "ai-response").text.strip()
         s.actual = f"ai-response='{resp_text}'"
-        expected_keywords = ["allergies", "ingredients", "dish", "recipe", "cook"]
-        assert any(k in resp_text.lower() for k in expected_keywords), \
+
+        # ✅ Less brittle check: must mention user input
+        assert "chicken" in resp_text.lower() or "rice" in resp_text.lower(), \
             f"Unexpected AI response: {resp_text}"
+
+

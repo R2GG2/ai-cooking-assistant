@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, session, send_from_directory,
 from dotenv import load_dotenv
 import json
 import base64
-
+from flask import Flask, request, jsonify, render_template
 from ai_app.response_logic.response_logic import generate_response
 
 print("🧠 Running:", __file__)
@@ -135,7 +135,21 @@ def api_message():
     session["messages"].append({"role": "assistant", "content": reply})
     return jsonify({"reply": reply})
 
-# ---- Run ----
+@app.route("/api/response", methods=["POST"])
+def api_response():
+    data = request.get_json(silent=True)
+    if not data or "input" not in data:
+        return jsonify({"error": "No input provided"}), 400
+
+    user_input = data["input"]
+
+   
+    basic_response = generate_response(user_input, session)
+
+    response = _compose_contextual_response(basic_response)
+    return jsonify({"response": response})
+
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5000"))
     pytest_mode = os.getenv("PYTEST_RUN") == "1"
