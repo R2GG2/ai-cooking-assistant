@@ -1,54 +1,101 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>AI Cooking Assistant</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 2em;
+            background-color: #fafafa;
         }
 
-        #ai-response {
+        h1 {
+            color: #333;
+        }
+
+        #chat-box {
             background: #f0f0f8;
             border: 1px solid #ccc;
+            border-radius: 8px;
             padding: 1em;
-            margin-top: 1em;
+            min-height: 150px;
+            overflow-y: auto;
+            margin-top: 1.5em;
+        }
+
+        .user-message {
+            text-align: right;
+            color: #0056b3;
+            margin: 0.5em 0;
+        }
+
+        .ai-message {
+            text-align: left;
+            color: #333;
+            margin: 0.5em 0;
         }
 
         form {
-            margin-bottom: 2em;
+            margin-bottom: 1em;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 0.5em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 0.5em 1em;
+            margin-left: 0.5em;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
         }
     </style>
 </head>
 
 <body>
     <h1>AI Cooking Assistant</h1>
+
     <form id="ai-form">
-        <label for="user-input">Tell me your ingredients, equipment, or any dietary restrictions:</label><br>
-        <input type="text" id="user-input" name="user_input" style="width: 350px;"
-            placeholder="E.g., chicken, carrots, Instant Pot">
+        <label for="user-input">Tell me your ingredients, equipment, or dietary restrictions:</label><br>
+        <input type="text" id="user-input" name="user_input" placeholder="E.g., chicken, carrots, Instant Pot">
         <button id="send-btn" type="submit">Ask</button>
     </form>
 
-    <div id="ai-response">
-        <strong>AI Response:</strong><br>
-        <span id="response-text">Waiting for input...</span>
+    <!-- Backward-compatible chat container -->
+    <div id="chat-box">
+        <div class="ai-message"><strong>AI:</strong> Waiting for your question...</div>
     </div>
 
     <hr>
     <a href="/results">View Automation Test Results</a>
 
     <script>
-        document.getElementById("ai-form").addEventListener("submit", async function (event) {
-            event.preventDefault();
+        const form = document.getElementById("ai-form");
+        const inputBox = document.getElementById("user-input");
+        const chatBox = document.getElementById("chat-box");
 
-            const userInput = document.getElementById("user-input").value;
-            const responseBox = document.getElementById("response-text");
-            const responseDiv = document.getElementById("ai-response");
+        async function sendMessage(userInput) {
+            const userDiv = document.createElement("div");
+            userDiv.className = "user-message";
+            userDiv.textContent = "You: " + userInput;
+            chatBox.appendChild(userDiv);
 
-            responseBox.innerText = "Thinking...";
-            responseDiv.innerHTML = "<strong>AI Response:</strong><br>Thinking...";
+            const aiDiv = document.createElement("div");
+            aiDiv.className = "ai-message";
+            aiDiv.innerHTML = "<strong>AI:</strong> Thinking...";
+            chatBox.appendChild(aiDiv);
 
             try {
                 const resp = await fetch("/api/response", {
@@ -57,23 +104,26 @@
                     body: JSON.stringify({ input: userInput })
                 });
 
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
+                if (!resp.ok) throw new Error("Network response was not ok");
                 const data = await resp.json();
 
-                // Update both the inner span and the container
-                responseBox.innerText = data.response;
-                responseDiv.innerHTML = "<strong>AI Response:</strong><br>" + data.response;
+                aiDiv.innerHTML = "<strong>AI:</strong> " + data.response;
             } catch (error) {
-                const msg = "⚠️ Error: " + error.message;
-                responseBox.innerText = msg;
-                responseDiv.innerHTML = "<strong>AI Response:</strong><br>" + msg;
+                aiDiv.innerHTML = "<strong>⚠️ Error:</strong> " + error.message;
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const userInput = inputBox.value.trim();
+            if (userInput) {
+                sendMessage(userInput);
+                inputBox.value = "";
             }
         });
     </script>
-
 </body>
 
 </html>
