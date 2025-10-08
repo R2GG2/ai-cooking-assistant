@@ -218,3 +218,8 @@ __marimo__/
 # local reports
 Selenium_Test_Cases.xlsx
 docs/unit_test_cases.xlsx
+
+# Ignore exported reports
+Selenium_Test_Cases.xlsx
+docs/unit_test_cases.xlsx
+
