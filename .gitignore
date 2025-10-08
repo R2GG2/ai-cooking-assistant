@@ -214,3 +214,7 @@ __marimo__/
 # Ignore generated test case exports
 *.xlsx
 !docs/*.md
+
+# local reports
+Selenium_Test_Cases.xlsx
+docs/unit_test_cases.xlsx
