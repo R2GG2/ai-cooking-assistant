@@ -175,7 +175,26 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
             "and what tools or ingredients you have in mind."
         )
 
-    # --- 3. Restrictions / Allergies ---
+    # --- 3. Mood & Wellness Intents ---
+    # Mood-based responses
+    if any(word in text for word in ["comfort food", "cozy", "warm meal", "hearty"]):
+        return "Let's make something cozy and satisfying — maybe a stew or baked dish with warming spices."
+    elif any(word in text for word in ["romantic", "date night", "elegant", "candle"]):
+        return "For a romantic touch, think light but elegant — seared salmon, roasted vegetables, a glass of wine, and candlelight."
+    elif any(word in text for word in ["quick", "fast", "short on time", "easy dinner"]):
+        return "Here's something quick: a 15-minute stir-fry or an Instant Pot soup using whatever protein and veggies you have."
+    elif any(word in text for word in ["healthy reset", "detox", "light meal", "clean eating"]):
+        return "Try a light, balanced bowl — lean protein, greens, and lemony dressing to reset your system."
+
+    # Wellness-based responses
+    elif "intermittent fasting" in text or "after my fast" in text or "breaking my fast" in text:
+        return "After fasting, start gentle — hydrate with electrolytes, then eat a nutrient-dense meal with protein and fiber to stabilize energy."
+    elif any(word in text for word in ["perimenopausal", "menopause", "hormone"]):
+        return "Support hormone balance with omega-3s, leafy greens, and anti-inflammatory foods like salmon, flaxseed, and turmeric."
+    elif any(word in text for word in ["bloated", "bloat", "gas", "swollen"]):
+        return "Go easy on salt and cruciferous veggies today — try ginger tea, cucumber salad, or mint-infused water to reduce bloating."
+
+    # --- 4. Restrictions / Allergies ---
     if contains_restriction(text):
         restricted_items = extract_restrictions(text)
         if restricted_items:
@@ -203,7 +222,7 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
                 "Could you tell me a bit more about your preferences?"
             )
 
-    # --- 4. Equipment / Method Checks ---
+    # --- 5. Equipment / Method Checks ---
     if contains_equipment(text):
         eq = extract_equipment(text)
         eq_names = ", ".join(eq)
@@ -223,7 +242,7 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
 
         return f"With your {eq_names}, you could make a hearty dish. Add your ingredients and I’ll suggest steps."
 
-    # --- 5. Ingredient Handling ---
+    # --- 6. Ingredient Handling ---
     if ingredients or mentions_ingredients(text):
         items = extract_ingredients(text, ingredients)
         restricted = [i for i in items if i in restricted_ingredients]
@@ -246,20 +265,28 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
                 f"With what you have ({', '.join(items)}), I suggest a cozy meal combining them. "
                 "Let’s keep it allergy-friendly if needed."
             )
+            # --- 6b. Wellness & Symptom Cues ---
+        if "bloated" in text or "bloat" in text:
+            return (
+                "When you’re feeling bloated, go for soothing, light options — "
+                "like ginger or mint tea, clear broth, or lightly cooked vegetables. "
+                "Avoid heavy or fried foods to ease digestion."
+            )
 
-        # --- 6. Ambiguous Preference Handling ---
+
+    # --- 7. Ambiguous Preference Handling ---
     if ("don’t like" in text or "don't like" in text) and "want" in text:
         return (
             "That’s an interesting mix — you don’t like sugar but still want dessert! "
             "I can suggest low-sugar or naturally sweet options if you'd like."
         )
 
-
-    # --- 7. Fallback Response ---
+    # --- 8. Fallback Response ---
     return (
         "Tell me more about what you’re in the mood for and what tools or ingredients you have. "
         "I’ll suggest ideas that fit your setup."
     )
+
 
 
 # --- Bias Filter ---
