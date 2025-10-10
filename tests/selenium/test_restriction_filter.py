@@ -21,27 +21,58 @@ class TestRestrictionFilter:
         yield
         driver.quit()
 
+    def wait_for_ai_response(driver, timeout=15):
+        """Waits for 'Thinking...' to appear and disappear in chat-box, then returns final text."""
+        chat_box = driver.find_element(By.ID, "chat-box")
+
+        # Step 1: Wait until 'Thinking' appears
+        try:
+            WebDriverWait(driver, 5).until(
+                EC.text_to_be_present_in_element((By.ID, "chat-box"), "Thinking")
+            )
+        except Exception:
+            # if it loads too fast, not a failure — just continue
+            pass
+
+        # Step 2: Wait until 'Thinking' disappears or response changes
+        WebDriverWait(driver, timeout).until_not(
+            EC.text_to_be_present_in_element((By.ID, "chat-box"), "Thinking")
+        )
+
+        # Step 3: Grab final text
+        return chat_box.text.lower()
+
     def send_prompt_and_get_response(self, prompt):
-         # Initial warm-up for the first test run
+        # Warm-up for initial load
         time.sleep(2)
+
         input_box = self.driver.find_element(By.ID, "user-input")
         input_box.clear()
         input_box.send_keys(prompt)
         input_box.send_keys(Keys.RETURN)
 
-                # Wait for placeholder text (case-insensitive)
-        WebDriverWait(self.driver, 5).until(
-            lambda d: "thinking" in d.find_element(By.ID, "chat-box").text.lower()
-        )
-
-        # Wait for placeholder to disappear
-        WebDriverWait(self.driver, 10).until(
-            lambda d: "thinking" not in d.find_element(By.ID, "chat-box").text.lower()
-        )
-
-
         chat_box = self.driver.find_element(By.ID, "chat-box")
+
+        try:
+            # Wait briefly for "thinking" to appear
+            WebDriverWait(self.driver, 5).until(
+                lambda d: "thinking" in d.find_element(By.ID, "chat-box").text.lower()
+            )
+        except:
+            print("[StableWait] 'Thinking' skipped — waiting directly for AI response.")
+
+        # Wait until an AI response is visible and 'thinking' gone
+        WebDriverWait(self.driver, 20).until(
+            lambda d: (
+                "ai:" in d.find_element(By.ID, "chat-box").text.lower()
+                and "thinking" not in d.find_element(By.ID, "chat-box").text.lower()
+            )
+)
+
+
+
         return chat_box.text.lower()
+
 
     def test_no_pork_restriction(self):
         response = self.send_prompt_and_get_response("I don't eat pork.")
