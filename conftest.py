@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import subprocess
 import time
 import signal
+import json
+from datetime import datetime
+from pathlib import Path
 
 # ---- Load environment early (BASE_URL, etc.) ----
 load_dotenv()
@@ -76,3 +79,41 @@ def flask_app():
     os.killpg(os.getpgid(flask_process.pid), signal.SIGTERM)
     flask_process.wait()
 
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Capture test results and append structured logs to a JSON file."""
+    outcome = yield
+    result = outcome.get_result()
+
+    # Only log call phase (skip setup/teardown)
+    if result.when != "call":
+        return
+
+    log_entry = {
+        "test_name": item.name,
+        "node_id": item.nodeid,
+        "outcome": result.outcome.upper(),
+        "duration_sec": round(result.duration, 2),
+        "timestamp": datetime.utcnow().isoformat(),
+        "response_excerpt": getattr(item, "response_excerpt", None),
+    }
+
+    log_file = Path("test_results_json") / "test_feedback.json"
+    log_file.parent.mkdir(exist_ok=True)
+
+    # Append (or create file if missing)
+    if log_file.exists():
+        with open(log_file, "r+", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = []
+            data.append(log_entry)
+            f.seek(0)
+            json.dump(data, f, indent=2)
+    else:
+        with open(log_file, "w", encoding="utf-8") as f:
+            json.dump([log_entry], f, indent=2)
+
+    print(f"\n[LOGGED] {item.name} → {result.outcome.upper()}")

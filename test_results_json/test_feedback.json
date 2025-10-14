@@ -1,0 +1,658 @@
+[
+  {
+    "test_name": "test_remembers_previous_preference",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_remembers_previous_preference",
+    "outcome": "FAILED",
+    "duration_sec": 2.7,
+    "timestamp": "2025-10-14T16:42:12.022117",
+    "response_excerpt": "ai: waiting for your question...\nyou: i don't eat dairy.\nai: with what you have (restrictions, messages, equipment, ingredients), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restric"
+  },
+  {
+    "test_name": "test_recalls_previous_equipment",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_previous_equipment",
+    "outcome": "PASSED",
+    "duration_sec": 3.15,
+    "timestamp": "2025-10-14T16:42:15.177111",
+    "response_excerpt": "ai: waiting for your question...\nyou: i don't eat dairy.\nai: with what you have (restrictions, messages, equipment, ingredients), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restric"
+  },
+  {
+    "test_name": "test_recalls_prior_mood",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_prior_mood",
+    "outcome": "PASSED",
+    "duration_sec": 2.65,
+    "timestamp": "2025-10-14T16:42:17.829233",
+    "response_excerpt": "ai: waiting for your question...\nyou: i don't eat dairy.\nai: with what you have (restrictions, messages, equipment, ingredients), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restric"
+  },
+  {
+    "test_name": "test_basic_prompt_response",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_basic_prompt_response",
+    "outcome": "PASSED",
+    "duration_sec": 0.1,
+    "timestamp": "2025-10-14T16:42:18.369619",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_followup_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_followup_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.55,
+    "timestamp": "2025-10-14T16:42:18.916629",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_restriction_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_restriction_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.05,
+    "timestamp": "2025-10-14T16:42:18.965878",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_equipment_suggestion",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_equipment_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 0.04,
+    "timestamp": "2025-10-14T16:42:19.004352",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_single_ingredient",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_single_ingredient",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T16:42:19.564060",
+    "response_excerpt": "ai: waiting for your question...\nyou: just eggs\nai: with what you have (ingredients, restrictions, messages, eggs, equipment), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stove"
+  },
+  {
+    "test_name": "test_unknown_input",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_unknown_input",
+    "outcome": "PASSED",
+    "duration_sec": 1.81,
+    "timestamp": "2025-10-14T16:42:21.377050",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_comfort_food_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_comfort_food_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.12,
+    "timestamp": "2025-10-14T16:42:23.012604",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_romantic_meal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_romantic_meal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T16:42:24.081674",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_quick_dinner_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_quick_dinner_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T16:42:25.665361",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_healthy_reset_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_healthy_reset_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T16:42:26.734919",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_intermittent_fasting_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_intermittent_fasting_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T16:42:28.320291",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_perimenopausal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_perimenopausal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.59,
+    "timestamp": "2025-10-14T16:42:29.909111",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_bloated_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_bloated_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T16:42:30.978743",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_no_pork_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_pork_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.11,
+    "timestamp": "2025-10-14T16:42:33.583376",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_no_dairy_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_dairy_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 7.25,
+    "timestamp": "2025-10-14T16:42:40.833889",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_gluten_free_suggestion",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_gluten_free_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 2.06,
+    "timestamp": "2025-10-14T16:42:42.899041",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_combined_restrictions",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_combined_restrictions",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T16:42:44.971982",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_unrecognized_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_unrecognized_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T16:42:47.044792",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_recalls_previous_equipment",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_previous_equipment",
+    "outcome": "PASSED",
+    "duration_sec": 2.69,
+    "timestamp": "2025-10-14T16:58:21.870076",
+    "response_excerpt": "ai: waiting for your question...\nyou: i have an instant pot.\nai: with your instant pot, you could make a hearty dish. add your ingredients and i\u2019ll suggest steps. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish:"
+  },
+  {
+    "test_name": "test_recalls_prior_mood",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_prior_mood",
+    "outcome": "PASSED",
+    "duration_sec": 3.17,
+    "timestamp": "2025-10-14T16:58:25.037593",
+    "response_excerpt": "ai: waiting for your question...\nyou: i have an instant pot.\nai: with your instant pot, you could make a hearty dish. add your ingredients and i\u2019ll suggest steps. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish:"
+  },
+  {
+    "test_name": "test_basic_prompt_response",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_basic_prompt_response",
+    "outcome": "PASSED",
+    "duration_sec": 0.1,
+    "timestamp": "2025-10-14T16:58:25.596108",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_followup_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_followup_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.03,
+    "timestamp": "2025-10-14T16:58:25.623310",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_restriction_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_restriction_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.04,
+    "timestamp": "2025-10-14T16:58:25.660940",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_equipment_suggestion",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_equipment_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T16:58:26.217844",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_single_ingredient",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_single_ingredient",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T16:58:26.778677",
+    "response_excerpt": "ai: waiting for your question...\nyou: just eggs\nai: with what you have (eggs, messages, equipment, ingredients, restrictions), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stove"
+  },
+  {
+    "test_name": "test_unknown_input",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_unknown_input",
+    "outcome": "PASSED",
+    "duration_sec": 0.74,
+    "timestamp": "2025-10-14T16:58:27.515335",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_comfort_food_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_comfort_food_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.63,
+    "timestamp": "2025-10-14T16:58:29.623093",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_romantic_meal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_romantic_meal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T16:58:31.201511",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_quick_dinner_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_quick_dinner_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T16:58:32.273085",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_healthy_reset_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_healthy_reset_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T16:58:33.854336",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_intermittent_fasting_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_intermittent_fasting_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.59,
+    "timestamp": "2025-10-14T16:58:35.444540",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_perimenopausal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_perimenopausal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T16:58:37.025618",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_bloated_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_bloated_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.56,
+    "timestamp": "2025-10-14T16:58:38.587086",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_no_pork_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_pork_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.11,
+    "timestamp": "2025-10-14T16:58:41.190294",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_no_dairy_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_dairy_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T16:58:43.258449",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_gluten_free_suggestion",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_gluten_free_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T16:58:45.330375",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_combined_restrictions",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_combined_restrictions",
+    "outcome": "PASSED",
+    "duration_sec": 7.26,
+    "timestamp": "2025-10-14T16:58:52.589282",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_unrecognized_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_unrecognized_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.08,
+    "timestamp": "2025-10-14T16:58:54.666860",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_recalls_previous_equipment",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_previous_equipment",
+    "outcome": "PASSED",
+    "duration_sec": 2.18,
+    "timestamp": "2025-10-14T17:04:50.090752",
+    "response_excerpt": "ai: waiting for your question...\nyou: i have an instant pot.\nai: with your instant pot, you could make a hearty dish. add your ingredients and i\u2019ll suggest steps. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish:"
+  },
+  {
+    "test_name": "test_recalls_prior_mood",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_prior_mood",
+    "outcome": "PASSED",
+    "duration_sec": 2.64,
+    "timestamp": "2025-10-14T17:04:52.728537",
+    "response_excerpt": "ai: waiting for your question...\nyou: i have an instant pot.\nai: with your instant pot, you could make a hearty dish. add your ingredients and i\u2019ll suggest steps. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish:"
+  },
+  {
+    "test_name": "test_basic_prompt_response",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_basic_prompt_response",
+    "outcome": "PASSED",
+    "duration_sec": 0.61,
+    "timestamp": "2025-10-14T17:04:53.789949",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_followup_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_followup_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.04,
+    "timestamp": "2025-10-14T17:04:53.829191",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_restriction_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_restriction_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T17:04:54.391765",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_equipment_suggestion",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_equipment_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 0.05,
+    "timestamp": "2025-10-14T17:04:54.442870",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_single_ingredient",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_single_ingredient",
+    "outcome": "PASSED",
+    "duration_sec": 0.03,
+    "timestamp": "2025-10-14T17:04:54.477842",
+    "response_excerpt": "ai: waiting for your question...\nyou: just eggs\nai: with what you have (ingredients, messages, restrictions, eggs, equipment), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stove"
+  },
+  {
+    "test_name": "test_unknown_input",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_unknown_input",
+    "outcome": "PASSED",
+    "duration_sec": 2.31,
+    "timestamp": "2025-10-14T17:04:56.786005",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_comfort_food_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_comfort_food_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.12,
+    "timestamp": "2025-10-14T17:04:58.405634",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_romantic_meal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_romantic_meal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.06,
+    "timestamp": "2025-10-14T17:04:59.471728",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_quick_dinner_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_quick_dinner_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T17:05:00.541012",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_healthy_reset_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_healthy_reset_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T17:05:02.125841",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_intermittent_fasting_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_intermittent_fasting_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.59,
+    "timestamp": "2025-10-14T17:05:03.712728",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_perimenopausal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_perimenopausal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.59,
+    "timestamp": "2025-10-14T17:05:05.300706",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_bloated_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_bloated_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T17:05:06.370049",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_no_pork_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_pork_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 7.32,
+    "timestamp": "2025-10-14T17:05:14.165134",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_no_dairy_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_dairy_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T17:05:16.234732",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_gluten_free_suggestion",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_gluten_free_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 7.23,
+    "timestamp": "2025-10-14T17:05:23.467110",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_combined_restrictions",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_combined_restrictions",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T17:05:25.536616",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_unrecognized_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_unrecognized_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T17:05:27.609834",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_remembers_previous_preference",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_remembers_previous_preference",
+    "outcome": "FAILED",
+    "duration_sec": 0.64,
+    "timestamp": "2025-10-14T17:08:54.145678",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_recalls_previous_equipment",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_previous_equipment",
+    "outcome": "PASSED",
+    "duration_sec": 1.11,
+    "timestamp": "2025-10-14T17:08:55.254900",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_recalls_prior_mood",
+    "node_id": "tests/selenium/test_context_memory.py::TestContextMemory::test_recalls_prior_mood",
+    "outcome": "PASSED",
+    "duration_sec": 1.14,
+    "timestamp": "2025-10-14T17:08:56.393561",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_basic_prompt_response",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_basic_prompt_response",
+    "outcome": "PASSED",
+    "duration_sec": 0.1,
+    "timestamp": "2025-10-14T17:08:56.947822",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_followup_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_followup_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.03,
+    "timestamp": "2025-10-14T17:08:56.975593",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_restriction_prompt",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_restriction_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T17:08:57.532332",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_equipment_suggestion",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_equipment_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 0.57,
+    "timestamp": "2025-10-14T17:08:58.106987",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_single_ingredient",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_single_ingredient",
+    "outcome": "PASSED",
+    "duration_sec": 0.56,
+    "timestamp": "2025-10-14T17:08:58.673143",
+    "response_excerpt": "ai: waiting for your question...\nyou: just eggs\nai: with what you have (equipment, ingredients, restrictions, eggs, messages), i suggest a cozy meal combining them. let\u2019s keep it allergy-friendly if needed. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stove"
+  },
+  {
+    "test_name": "test_unknown_input",
+    "node_id": "tests/selenium/test_conversation_flow.py::TestConversationFlow::test_unknown_input",
+    "outcome": "PASSED",
+    "duration_sec": 1.27,
+    "timestamp": "2025-10-14T17:08:59.948829",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_comfort_food_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_comfort_food_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.11,
+    "timestamp": "2025-10-14T17:09:01.545841",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_romantic_meal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_romantic_meal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T17:09:03.124474",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_quick_dinner_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_quick_dinner_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T17:09:04.710724",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_healthy_reset_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_healthy_reset_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.58,
+    "timestamp": "2025-10-14T17:09:06.293765",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_intermittent_fasting_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_intermittent_fasting_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.59,
+    "timestamp": "2025-10-14T17:09:07.885448",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_perimenopausal_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_perimenopausal_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.06,
+    "timestamp": "2025-10-14T17:09:08.951376",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_bloated_prompt",
+    "node_id": "tests/selenium/test_mood_intent_filter.py::TestMoodIntentFilter::test_bloated_prompt",
+    "outcome": "PASSED",
+    "duration_sec": 1.07,
+    "timestamp": "2025-10-14T17:09:10.019722",
+    "response_excerpt": "ai: waiting for your question...\nyou: i want comfort food.\nai: let's make something cozy and satisfying \u2014 maybe a stew or baked dish with warming spices. plan so far: - equipment: none - restrictions: none - ingredients: none suggested dish: stovetop"
+  },
+  {
+    "test_name": "test_no_pork_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_pork_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 7.27,
+    "timestamp": "2025-10-14T17:09:17.738106",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_no_dairy_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_no_dairy_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.06,
+    "timestamp": "2025-10-14T17:09:19.800016",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_gluten_free_suggestion",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_gluten_free_suggestion",
+    "outcome": "PASSED",
+    "duration_sec": 2.05,
+    "timestamp": "2025-10-14T17:09:21.850639",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_combined_restrictions",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_combined_restrictions",
+    "outcome": "PASSED",
+    "duration_sec": 2.06,
+    "timestamp": "2025-10-14T17:09:23.916094",
+    "response_excerpt": null
+  },
+  {
+    "test_name": "test_unrecognized_restriction",
+    "node_id": "tests/selenium/test_restriction_filter.py::TestRestrictionFilter::test_unrecognized_restriction",
+    "outcome": "PASSED",
+    "duration_sec": 2.07,
+    "timestamp": "2025-10-14T17:09:25.984768",
+    "response_excerpt": null
+  }
+]

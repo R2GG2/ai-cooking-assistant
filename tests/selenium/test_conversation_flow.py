@@ -80,14 +80,20 @@ class TestConversationFlow:
             f"Expected equipment suggestion, got: {response}"
         )
 
-    def test_single_ingredient(self, driver):
+    def test_single_ingredient(self, driver, request):
         """Verify assistant responds appropriately to a single ingredient."""
         driver.get("http://127.0.0.1:5000")
         input_box = driver.find_element(By.ID, "user-input")
-        input_box.send_keys("Just eggs")
+        prompt = "Just eggs"
+        input_box.send_keys(prompt)
         input_box.send_keys(Keys.RETURN)
 
         response = self.wait_for_response(driver)
+
+        # Attach metadata for pytest-html custom rendering
+        request.node.prompt = prompt
+        request.node.response_full = response
+        request.node.response_excerpt = response[:300]
 
         expected_keywords = [
             "simple", "snack", "omelet", "breakfast",
