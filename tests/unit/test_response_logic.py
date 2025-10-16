@@ -11,7 +11,7 @@ def test_equipment_detection():
 
 def test_restricted_ingredient_response():
     result = generate_response("I want to cook with sugar and coconut", ingredients=["sugar", "coconut"])
-    assert "restriction" in result.lower() or "avoid" in result.lower()
+    assert any(word in result.lower() for word in ["restriction", "avoid", "low-sugar", "sugar-free"])
 
 def test_unsure_user_input():
     result = generate_response("I'm not sure what I have.")

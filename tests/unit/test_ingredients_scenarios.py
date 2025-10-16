@@ -1,3 +1,6 @@
+import pytest
+from ai_app.response_logic import generate_response
+
 # --- Ingredient-based tests ---
 class TestIngredientScenarios:
     @pytest.mark.parametrize("prompt", [

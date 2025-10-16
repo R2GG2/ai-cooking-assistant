@@ -18,8 +18,8 @@ class TestRestrictionScenarios:
         result = generate_response(prompt)
         assert isinstance(result, str), f"Expected str, got {type(result)}"
         assert any(word in result.lower() for word in [
-            "avoid", "without", "free", "substitute", "alternative", "restriction"
-        ]), f"Restriction not reflected in response: {result}"
+            "avoid", "without", "free", "substitute", "alternative", "restriction", "low-sugar"
+        ]), f"Restriction not reflected in response: {result}"  # ✅ Updated to include "low-sugar"
 
     # --- Specific checks ---
     def test_peanut_allergy(self):

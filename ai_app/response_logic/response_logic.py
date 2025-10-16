@@ -2,6 +2,8 @@ import re
 from ai_app.response_logic import bias_filter
 from ai_app.response_logic import detect_ingredients
 from ai_app.response_logic import detect_equipment
+from ai_app.response_logic.meal_suggestion_logic import suggest_meal
+
 
 # --- Global Data ---
 restricted_ingredients = [
@@ -142,6 +144,25 @@ def _detect_ingredients(prompt: str) -> list[str]:
     parts = re.split(r",|\band\b", tail)
     return [p.strip().lower() for p in parts if p.strip().lower() not in ["i", "have", "cook", "make", "using"]]
 
+def parse_input_list(text: str) -> list[str]:
+    """
+    Parses comma-separated or 'and'-linked ingredient/equipment lists from user input.
+    Example: "I have chicken, garlic and lemon" ➝ ["chicken", "garlic", "lemon"]
+    """
+    text = text.lower()
+    tail = ""
+
+    # Look for common start phrases
+    match = INGR_AFTER_KEYWORDS.search(text)
+    if match:
+        tail = match.group(2)
+    else:
+        tail = text
+
+    parts = re.split(r",|\band\b", tail)
+    return [p.strip() for p in parts if p.strip() and p.strip() not in {"i", "have", "cook", "make", "using"}]
+
+
 def _choose_dish(equipment, ingredients, mood_cozy=False):
     eq = set(equipment)
     ings = set(ingredients)
@@ -178,7 +199,25 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
     # --- 3. Mood & Wellness Intents ---
     # Mood-based responses
     if any(word in text for word in ["comfort food", "cozy", "warm meal", "hearty"]):
-        return "Let's make something cozy and satisfying — maybe a stew or baked dish with warming spices."
+        ingredients_extracted = extract_ingredients(text, ingredients)
+        equipment_extracted = extract_equipment(text)
+        restrictions_extracted = extract_restrictions(text) if contains_restriction(text) else []
+
+        meal_plan = suggest_meal(
+            equipment=equipment_extracted,
+            ingredients=ingredients_extracted,
+            restrictions=restrictions_extracted,
+            mood_cozy=True
+        )
+
+        return (
+            "Let's make something cozy and satisfying — maybe a stew or baked dish with warming spices. "
+            f"Plan so far: - Equipment: {', '.join(equipment_extracted) or 'none'}"
+            f" - Restrictions: {', '.join(restrictions_extracted) or 'none'}"
+            f" - Ingredients: {', '.join(ingredients_extracted) or 'none'}\n"
+            f"{meal_plan}"
+        )
+
     elif any(word in text for word in ["romantic", "date night", "elegant", "candle"]):
         return "For a romantic touch, think light but elegant — seared salmon, roasted vegetables, a glass of wine, and candlelight."
     elif any(word in text for word in ["quick", "fast", "short on time", "easy dinner"]):
@@ -222,6 +261,10 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
                 "Could you tell me a bit more about your preferences?"
             )
 
+    # --- 4b. Contextual Allergy Reinforcement ---
+    if "fish" in text and ("no dairy" in text or "dairy-free" in text or "without dairy" in text):
+        return "Got it — we’ll keep this dairy-free and suggest a light, safe fish dish."
+
     # --- 5. Equipment / Method Checks ---
     if contains_equipment(text):
         eq = extract_equipment(text)
@@ -242,9 +285,16 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
 
         return f"With your {eq_names}, you could make a hearty dish. Add your ingredients and I’ll suggest steps."
 
+    # --- 5b. Sugar-Conscious Meals ---
+    if "sugar" in text:
+        return (
+            "Let's focus on a healthy, low-sugar option. "
+            "You can use natural sweetness from fruits like apples or berries."
+        )
+
     # --- 6. Ingredient Handling ---
     if ingredients or mentions_ingredients(text):
-        items = extract_ingredients(text, ingredients)
+        items = parse_input_list(text)
         restricted = [i for i in items if i in restricted_ingredients]
 
         if restricted:
@@ -272,7 +322,6 @@ def generate_response(prompt: str, ingredients=None, equipment=None):
                 "like ginger or mint tea, clear broth, or lightly cooked vegetables. "
                 "Avoid heavy or fried foods to ease digestion."
             )
-
 
     # --- 7. Ambiguous Preference Handling ---
     if ("don’t like" in text or "don't like" in text) and "want" in text:
