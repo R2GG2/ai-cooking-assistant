@@ -3,21 +3,91 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Local Test Page</title>
+  <title>AI Cooking Assistant — Test Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 2rem;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #test-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-right: 0.5rem;
+    }
+
+    button {
+      padding: 0.55rem 1rem;
+      font-size: 1rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #ai-response {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 6px;
+      background: #f0f0f0;
+      white-space: pre-wrap;
+      font-family: monospace;
+      display: none;
+    }
+
+    .response-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      color: #007BFF;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Local Test Page for Selenium</h1>
+  <h1>AI Cooking Assistant – Local Test Page</h1>
+  <div id="test-container">
+    <input id="user-input" type="text" placeholder="Type a prompt…" />
+    <button id="send-btn">Send</button>
 
-  <input id="user-input" type="text" placeholder="Type a message…" />
-  <button id="send-btn">Send</button>
-
-  <div id="ai-response" style="margin-top:1rem; white-space:pre-wrap;"></div>
+    <div id="ai-response">
+      <div class="response-title" onclick="toggleResponse()">▼ AI Response (Click to Collapse)</div>
+      <div id="response-content"></div>
+    </div>
+  </div>
 
   <script>
     const input = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
-    const resp = document.getElementById('ai-response');
+    const aiResponse = document.getElementById('ai-response');
+    const respContent = document.getElementById('response-content');
 
     async function sendMessage(text) {
       try {
@@ -27,9 +97,11 @@
           body: JSON.stringify({ input: text })
         });
         const data = await r.json();
-        resp.textContent = data.response || '(no response)';
+        aiResponse.style.display = 'block';
+        respContent.textContent = data.response || '(no response)';
       } catch (err) {
-        resp.textContent = 'Error: ' + err.message;
+        aiResponse.style.display = 'block';
+        respContent.textContent = 'Error: ' + err.message;
       }
     }
 
@@ -51,6 +123,14 @@
         }
       }
     });
+
+    function toggleResponse() {
+      const current = respContent.style.display;
+      respContent.style.display = current === 'none' ? 'block' : 'none';
+    }
+
+    // Initialize collapsed
+    respContent.style.display = 'block';
   </script>
 </body>
 

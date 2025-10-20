@@ -3,6 +3,8 @@ from ai_app.response_logic import bias_filter
 from ai_app.response_logic import detect_ingredients
 from ai_app.response_logic import detect_equipment
 from ai_app.response_logic.meal_suggestion_logic import suggest_meal
+import os
+from datetime import datetime
 
 
 # --- Global Data ---
@@ -86,16 +88,35 @@ def mentions_ingredients(text: str) -> bool:
     return any(word in text for word in ingredient_markers)
 
 
+
 def extract_ingredients(text: str, provided=None):
-    # Simplified mock extraction for tests
+    clean_text = text.lower()
+    tokens = re.findall(r'\b\w+\b', clean_text)
+
+    # 👇 Optional: print tokens for debug
+    print("[DEBUG] Tokens:", tokens)
+
     known_ingredients = [
-        "chicken", "beef", "pork", "fish", "rice", "beans", "potatoes", "lemon", "parsley",
-        "garlic", "sugar", "coconut", "bread", "eggs", "fruit", "veggies", "vegetables"
+        "chicken", "beef", "pork", "fish", "rice", "beans", "potato", "carrot",
+        "lemon", "parsley", "garlic", "sugar", "coconut", "bread", "egg", "fruit",
+        "vegetable", "pepper", "onion", "tomato"
     ]
-    extracted = [item for item in known_ingredients if item in text]
+
+    singularized = [t[:-1] if t.endswith("s") else t for t in tokens]
+
+    # 👇 Optional: print singularized tokens for debug
+    print("[DEBUG] Singularized:", singularized)
+
+    extracted = [item for item in known_ingredients if item in singularized]
+
+    print("[DEBUG][EXTRACTED INGREDIENTS]:", extracted)
+
     if provided:
         extracted.extend(provided)
-    return list(set(extracted))
+
+    return list(dict.fromkeys(extracted))
+
+
 
 
 # --- Restriction Helpers ---
@@ -181,161 +202,117 @@ def _choose_dish(equipment, ingredients, mood_cozy=False):
     return "stew" if mood_cozy else "soup"
 
 # --- Main Function ---
-def generate_response(prompt: str, ingredients=None, equipment=None):
-    text = prompt.lower().strip()
+# File: generate_html_test_report.py
 
-    # --- 1. Bias / Safety First ---
-    safe, cleaned_prompt, msg = bias_filter(text)
-    if not safe:
-        return msg or "⚠️ Your prompt may contain unsafe or biased content. Please rephrase."
+def generate_report(output_path: str, test_results: list):
+    """
+    Generate an HTML report from a list of test result dictionaries.
+    Each dictionary should have: 'name', 'status', 'details', and optionally 'error'.
+    """
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cooking Assistant Test Report</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }}
+        h1 {{ color: #333; }}
+        .test {{ background: white; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
+        .pass {{ border-left: 5px solid #4CAF50; }}
+        .fail {{ border-left: 5px solid #f44336; }}
+        .summary {{ margin-bottom: 20px; }}
+        details {{ margin-top: 6px; }}
+    </style>
+</head>
+<body>
+    <h1>AI Cooking Assistant - Automation Test Report</h1>
+    <div class="summary">
+        <strong>Date:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
+        <strong>Total tests:</strong> {len(test_results)}<br>
+        <strong>Passed:</strong> {sum(1 for r in test_results if r['status'] == 'passed')}<br>
+        <strong>Failed:</strong> {sum(1 for r in test_results if r['status'] == 'failed')}
+    </div>
+"""
+    for result in test_results:
+        status_class = 'pass' if result['status'] == 'passed' else 'fail'
+        html += f"""
+        <div class="test {status_class}">
+            <strong>{result['name']}</strong> - {result['status'].capitalize()}<br>
+            <details>
+                <summary>Details</summary>
+                <pre>{result['details']}</pre>
+        """
+        if result['status'] == 'failed' and 'error' in result:
+            html += f"<pre style='color: red;'>Error: {result['error']}</pre>"
+        html += "</details></div>"
 
-    # --- 2. Handle Empty / Unsure Input ---
-    if not text or text in ["", "idk", "not sure"]:
-        return (
-            "Please provide more input about what you’d like to cook "
-            "and what tools or ingredients you have in mind."
-        )
+    html += "</body></html>"
 
-    # --- 3. Mood & Wellness Intents ---
-    # Mood-based responses
-    if any(word in text for word in ["comfort food", "cozy", "warm meal", "hearty"]):
-        ingredients_extracted = extract_ingredients(text, ingredients)
-        equipment_extracted = extract_equipment(text)
-        restrictions_extracted = extract_restrictions(text) if contains_restriction(text) else []
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w') as f:
+        f.write(html)
+    print(f"✅ Report generated: {output_path}")
 
-        meal_plan = suggest_meal(
-            equipment=equipment_extracted,
-            ingredients=ingredients_extracted,
-            restrictions=restrictions_extracted,
-            mood_cozy=True
-        )
 
-        return (
-            "Let's make something cozy and satisfying — maybe a stew or baked dish with warming spices. "
-            f"Plan so far: - Equipment: {', '.join(equipment_extracted) or 'none'}"
-            f" - Restrictions: {', '.join(restrictions_extracted) or 'none'}"
-            f" - Ingredients: {', '.join(ingredients_extracted) or 'none'}\n"
-            f"{meal_plan}"
-        )
+# Sample usage for development (replace this with real integration later)
+if __name__ == '__main__':
+    sample_results = [
+        {
+            'name': 'Test input with chicken and carrots',
+            'status': 'passed',
+            'details': 'AI suggested a veggie soup with herbs.'
+        },
+        {
+            'name': 'Test input with shrimp (hallucination expected)',
+            'status': 'failed',
+            'details': 'AI responded with recipe using shrimp despite filter.',
+            'error': 'Expected: ingredient rejected; Got: recipe with shrimp'
+        }
+    ]
+    generate_report('static_site/test_report.html', sample_results)
 
-    elif any(word in text for word in ["romantic", "date night", "elegant", "candle"]):
-        return "For a romantic touch, think light but elegant — seared salmon, roasted vegetables, a glass of wine, and candlelight."
-    elif any(word in text for word in ["quick", "fast", "short on time", "easy dinner"]):
-        return "Here's something quick: a 15-minute stir-fry or an Instant Pot soup using whatever protein and veggies you have."
-    elif any(word in text for word in ["healthy reset", "detox", "light meal", "clean eating"]):
-        return "Try a light, balanced bowl — lean protein, greens, and lemony dressing to reset your system."
 
-    # Wellness-based responses
-    elif "intermittent fasting" in text or "after my fast" in text or "breaking my fast" in text:
-        return "After fasting, start gentle — hydrate with electrolytes, then eat a nutrient-dense meal with protein and fiber to stabilize energy."
-    elif any(word in text for word in ["perimenopausal", "menopause", "hormone"]):
-        return "Support hormone balance with omega-3s, leafy greens, and anti-inflammatory foods like salmon, flaxseed, and turmeric."
-    elif any(word in text for word in ["bloated", "bloat", "gas", "swollen"]):
-        return "Go easy on salt and cruciferous veggies today — try ginger tea, cucumber salad, or mint-infused water to reduce bloating."
+def smart_parse_input(prompt: str):
+    """Extract ingredients, equipment, and restrictions from natural prompts."""
+    text = prompt.lower()
 
-    # --- 4. Restrictions / Allergies ---
-    if contains_restriction(text):
-        restricted_items = extract_restrictions(text)
-        if restricted_items:
-            # Multi-axis (equipment + restriction)
-            if "instant pot" in text or "microwave" in text:
-                return (
-                    "Using the microwave, I’ll avoid restricted ingredients and "
-                    "suggest a safe, quick option suitable for your cooking method."
-                )
+    # --- Ingredient matching (simple list + fuzzy variants) ---
+    known_ingredients = [
+        "chicken", "beef", "pork", "fish", "salmon", "shrimp",
+        "rice", "potato", "carrot", "onion", "garlic", "lemon", "pepper",
+        "tomato", "beans", "egg", "cheese", "spinach", "mushroom", "broccoli"
+    ]
+    fuzzy_aliases = {"lemins": "lemon", "lemons": "lemon", "peppers": "pepper", "potatoes": "potato"}
 
-            # Specific keywords handled gracefully
-            if any(x in restricted_items for x in ["dairy", "milk", "cheese"]):
-                return "Got it — I’ll avoid restricted ingredients and suggest safe substitutes."
-            if any(x in restricted_items for x in ["gluten", "wheat", "bread"]):
-                return "Got it — I’ll avoid restricted ingredients and suggest alternative ingredients."
-            if any(x in restricted_items for x in ["pork", "bacon", "ham"]):
-                return (
-                    "Got it — I’ll avoid restricted ingredients for cultural or dietary reasons. "
-                    "Here’s a suitable dish idea."
-                )
-            return f"Got it — I’ll avoid {', '.join(restricted_items)} and suggest a dish idea without them."
-        else:
-            return (
-                "Got it — I’ll consider dietary restrictions. "
-                "Could you tell me a bit more about your preferences?"
-            )
+    ingredients = []
+    for word in text.split():
+        word_clean = re.sub(r"[^a-z]", "", word)
+        if word_clean in known_ingredients:
+            ingredients.append(word_clean)
+        elif word_clean in fuzzy_aliases:
+            ingredients.append(fuzzy_aliases[word_clean])
 
-    # --- 4b. Contextual Allergy Reinforcement ---
-    if "fish" in text and ("no dairy" in text or "dairy-free" in text or "without dairy" in text):
-        return "Got it — we’ll keep this dairy-free and suggest a light, safe fish dish."
+    # --- Equipment matching ---
+    known_equipment = ["instant pot", "oven", "stovetop", "microwave", "wok", "air fryer", "slow cooker", "grill"]
+    equipment = [eq for eq in known_equipment if eq in text]
 
-    # --- 5. Equipment / Method Checks ---
-    if contains_equipment(text):
-        eq = extract_equipment(text)
-        eq_names = ", ".join(eq)
+    # --- Restrictions / dietary hints ---
+    restriction_keywords = {
+        "dairy": ["no dairy", "dairy free", "lactose", "milk", "cheese"],
+        "gluten": ["gluten free", "no gluten", "no bread", "no wheat"],
+        "sugar": ["sugar free", "no sugar", "low sugar"],
+        "pork": ["no pork", "avoid pork", "halal"],
+        "vegan": ["vegan", "plant based"],
+        "vegetarian": ["vegetarian"],
+    }
 
-        if "microwave" in text:
-            return (
-                "Using the microwave, you can make a quick snack or reheat leftovers. "
-                "Let’s keep it simple, safe, and allergy-friendly."
-            )
-        if "oven" in text:
-            return (
-                "With your oven, you could bake or roast a hearty dish. "
-                "Add your ingredients and I’ll suggest steps."
-            )
-        if "instant pot" in eq_names and "dairy" in text:
-            return "With your Instant Pot, you could make a creamy-style dish using dairy substitutes."
+    restrictions = []
+    for key, variants in restriction_keywords.items():
+        if any(v in text for v in variants):
+            restrictions.append(key)
 
-        return f"With your {eq_names}, you could make a hearty dish. Add your ingredients and I’ll suggest steps."
-
-    # --- 5b. Sugar-Conscious Meals ---
-    if "sugar" in text:
-        return (
-            "Let's focus on a healthy, low-sugar option. "
-            "You can use natural sweetness from fruits like apples or berries."
-        )
-
-    # --- 6. Ingredient Handling ---
-    if ingredients or mentions_ingredients(text):
-        items = parse_input_list(text)
-        restricted = [i for i in items if i in restricted_ingredients]
-
-        if restricted:
-            return (
-                f"Got it — I’ll avoid {', '.join(restricted)} due to restrictions "
-                "and suggest alternatives or safe dishes."
-            )
-
-        if not items:
-            return "Please provide the ingredients you have so I can suggest an idea."
-        elif len(items) == 1:
-            return (
-                f"With only {items[0]}, you might make something simple — like a quick snack or side. "
-                "I can suggest a dish if you’d like."
-            )
-        else:
-            return (
-                f"With what you have ({', '.join(items)}), I suggest a cozy meal combining them. "
-                "Let’s keep it allergy-friendly if needed."
-            )
-            # --- 6b. Wellness & Symptom Cues ---
-        if "bloated" in text or "bloat" in text:
-            return (
-                "When you’re feeling bloated, go for soothing, light options — "
-                "like ginger or mint tea, clear broth, or lightly cooked vegetables. "
-                "Avoid heavy or fried foods to ease digestion."
-            )
-
-    # --- 7. Ambiguous Preference Handling ---
-    if ("don’t like" in text or "don't like" in text) and "want" in text:
-        return (
-            "That’s an interesting mix — you don’t like sugar but still want dessert! "
-            "I can suggest low-sugar or naturally sweet options if you'd like."
-        )
-
-    # --- 8. Fallback Response ---
-    return (
-        "Tell me more about what you’re in the mood for and what tools or ingredients you have. "
-        "I’ll suggest ideas that fit your setup."
-    )
-
+    return ingredients, equipment, restrictions
 
 
 # --- Bias Filter ---
