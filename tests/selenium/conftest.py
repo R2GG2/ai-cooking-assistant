@@ -62,7 +62,7 @@ def flask_server():
     print(f"✅ Flask started at {base_url}")
 
     proc = subprocess.Popen(
-        [sys.executable, "-m", "ai_app.app"],
+        [sys.executable, "-m", "ai_app.app", "--mode", "test"],
         cwd=str(REPO_ROOT),
         env=env,
         stdout=logfile,

@@ -1,3 +1,11 @@
+"""
+response_logic.py
+-----------------
+Low-level logic and text parsing helpers used by the AI Cooking Assistant.
+No Flask imports, no routing, no circular dependencies.
+"""
+
+
 import re
 from ai_app.response_logic import bias_filter
 from ai_app.response_logic import detect_ingredients
@@ -384,21 +392,22 @@ def contains_bias_or_sensitive(text: str) -> bool:
 def _restriction_response(prompt: str) -> str:
     """Return a response when a dietary restriction is detected."""
     restriction_keywords = {
-        "peanut": "Avoiding peanuts — here's a safe dinner suggestion.",
-        "nuts": "Avoiding nuts — here's a nut-free recipe suggestion.",
-        "dairy": "Avoiding dairy — try almond or oat milk as a substitute.",
-        "gluten": "Avoiding gluten — try rice, corn, or quinoa alternatives.",
-        "shellfish": "Avoiding shellfish — here’s a chicken or veggie option.",
-        "pork": "Avoiding restricted meats — here’s a healthy dinner idea.",
-        "sugar": "Avoiding added sugar — try a fruit-based dessert instead.",
-        "honey": "Avoiding honey — try maple syrup or agave instead."
+        "peanut": "Here's a safe alternative dinner suggestion without that allergen.",
+        "nuts": "Here's a nut-free recipe suggestion.",
+        "dairy": "To avoid lactose, use almond or oat milk as a substitute for creamy dishes.",
+        "gluten": "Avoid gluten — try rice, corn, or quinoa alternatives for bread-based dishes.",
+        "shellfish": "Here's a chicken or veggie alternative instead.",
+        "pork": "I suggest avoiding restricted meats — here's a healthy alternative dinner idea with other protein options.",
+        "beef": "Here's a recipe using chicken, fish, or plant-based alternatives.",
+        "sugar": "Avoid added sugar — try a fruit-based dessert as a low-sugar alternative instead.",
+        "honey": "Try maple syrup or agave as a substitute."
     }
 
     for key, message in restriction_keywords.items():
         if key in prompt.lower():
             return message
 
-    return "This recipe respects dietary needs — no restricted ingredients included."
+    return "This recipe avoids restricted ingredients and respects your dietary needs."
 
 
 def _equipment_response(prompt: str) -> str:
@@ -424,9 +433,11 @@ def _equipment_response(prompt: str) -> str:
 def _ambiguous_response(prompt: str) -> str:
     """Handle unclear or conflicting instructions."""
     if "traditional" in prompt.lower() or "bias" in prompt.lower():
-        return "Let’s keep things fair and flavor-focused — please clarify your preference so I can suggest a suitable recipe."
+        return "Let's keep things fair and flavor-focused — I can suggest several options. Please clarify your preference so I can provide a suitable recipe."
     if "carb" in prompt.lower():
-        return "Here’s a protein and veggie-focused idea to keep it low-carb — would you like me to suggest specific recipes?"
+        return "Would you like me to clarify options? Here's a protein and veggie-focused idea for a low-carb meal — I can suggest specific recipes."
     if "dessert" in prompt.lower() and "sugar" in prompt.lower():
-        return "Avoiding sugar? Try a fruit-based dessert — I can suggest some ideas."
+        return "Avoid added sugar — try a fruit-based dessert with natural sweetness instead. I can suggest some ideas."
+    if "creamy" in prompt.lower() and ("dairy" in prompt.lower() or "lactose" in prompt.lower()):
+        return "For creamy textures without dairy, use coconut milk or cashew cream as substitutes — here are some recipe ideas."
     return "Please clarify a bit more so I can suggest the right recipe for your needs."

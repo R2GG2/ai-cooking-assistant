@@ -10,6 +10,9 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+# ---- Register pytest plugins ----
+pytest_plugins = ["tests.selenium.report_hooks"]
+
 # ---- Load environment early (BASE_URL, etc.) ----
 load_dotenv()
 
@@ -48,20 +51,26 @@ def driver():
     yield driver
     driver.quit()
 
-# ---- Auto-start Flask server for UI tests ----
+# ---- Auto-start Flask server for UI tests (if not already running) ----
 @pytest.fixture(scope="session", autouse=True)
 def flask_app():
-    """Automatically start the Flask app for testing."""
+    """Automatically start the Flask app for testing, unless BASE_URL is already set."""
+    # If BASE_URL is set (by selenium conftest or manually), skip starting Flask
+    if os.getenv("BASE_URL"):
+        print(f"\n[root conftest] BASE_URL already set: {os.environ['BASE_URL']}, skipping Flask startup")
+        yield os.environ["BASE_URL"]
+        return
+
     project_root = pathlib.Path("/Users/ginka/Documents/ai-cooking-assistant")
     app_path = project_root / "ai_app" / "app.py"
     log_path = project_root / "tests" / "selenium" / "reports" / "flask_server.log"
 
-    print(f"\n[conftest] Starting Flask app from {app_path}...")
+    print(f"\n[root conftest] Starting Flask app from {app_path}...")
 
     log_path.parent.mkdir(parents=True, exist_ok=True)
 
     flask_process = subprocess.Popen(
-        ["python", str(app_path)],
+        ["python", str(app_path), "--mode", "test"],
         stdout=open(log_path, "w"),
         stderr=subprocess.STDOUT,
         preexec_fn=os.setsid,
@@ -75,7 +84,7 @@ def flask_app():
 
     yield
 
-    print("\n[conftest] Stopping Flask app...")
+    print("\n[root conftest] Stopping Flask app...")
     os.killpg(os.getpgid(flask_process.pid), signal.SIGTERM)
     flask_process.wait()
 

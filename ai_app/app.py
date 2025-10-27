@@ -7,7 +7,8 @@ from typing import List
 from flask import Flask, render_template, request, session, jsonify
 from dotenv import load_dotenv
 import json
-from ai_app.response_logic.response_logic import generate_response
+from ai_app.response_logic.response_hub import generate_response
+
 
 print("🧠 Running:", __file__)
 
@@ -181,13 +182,52 @@ def api_response():
 
     return jsonify({"response": reply})
 
+# --- 🧩 Bridge route for compatibility with legacy clients ---
+@app.route("/generate", methods=["POST"])
+def generate_bridge():
+    """Bridge route: forwards /generate requests to /api/response logic with proper session management."""
+    session.setdefault("restrictions", [])
+    session.setdefault("equipment", [])
+    session.setdefault("ingredients", [])
+    session.setdefault("messages", [])
+
+    data = request.get_json(silent=True) or {}
+    message = data.get("message", "")
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+
+    session["messages"].append({"role": "user", "content": message})
+
+    result = generate_response(message, session)
+    basic_response = result[0] if isinstance(result, tuple) else result
+
+    session.modified = True
+    reply = _compose_contextual_response(basic_response)
+    session["messages"].append({"role": "assistant", "content": reply})
+
+    return jsonify({"response": reply})
+
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", "5000"))
-    pytest_mode = os.getenv("PYTEST_RUN") == "1"
-    app.run(
-        host="127.0.0.1",
-        port=port,
-        debug=not pytest_mode,
-        use_reloader=not pytest_mode,
-    )
+    import argparse
+    import os
+
+    parser = argparse.ArgumentParser(description="Run AI Cooking Assistant Flask app.")
+    parser.add_argument("--mode", choices=["dev", "test"], default="dev",
+                        help="Select mode: 'dev' for manual debugging, 'test' for automation.")
+    args = parser.parse_args()
+
+    # Default port logic
+    port = 5000 if args.mode == "dev" else 5001
+
+    print(f"🧠 Running in {args.mode.upper()} mode on port {port}")
+
+    try:
+        app.run(host="0.0.0.0", port=port, debug=(args.mode == "dev"))
+    except OSError as e:
+        if "Address already in use" in str(e):
+            print(f"⚠️ Port {port} is busy. Try another mode or kill the old Flask process.")
+        else:
+            raise
+
+

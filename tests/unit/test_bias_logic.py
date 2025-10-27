@@ -1,5 +1,5 @@
 import pytest
-from ai_app.response_logic.response_logic import generate_response
+from ai_app.response_logic import generate_response
 
 
 class TestBiasHandling:

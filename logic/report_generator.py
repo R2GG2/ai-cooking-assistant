@@ -1,19 +1,12 @@
-# logic/report_generator.py
-
 import json
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path   # ← this one must be present
 
 
 def generate_html_test_report(json_path, output_html_path, title="AI Cooking Assistant – Test Report"):
     """
     Reads a test_results.json file and generates a clean HTML report.
     Works for both unit and Selenium test result formats.
-
-    Args:
-        json_path (str or Path): Path to the input JSON file with test results.
-        output_html_path (str or Path): Path where the HTML file will be saved.
-        title (str): Optional title for the HTML report.
     """
 
     json_path = Path(json_path)
@@ -29,7 +22,7 @@ def generate_html_test_report(json_path, output_html_path, title="AI Cooking Ass
         except json.JSONDecodeError as e:
             raise ValueError(f"❌ Invalid JSON format in {json_path}: {e}")
 
-    # ✅ Handle both {"tests": [...]} and plain list structures
+    # Handle both {"tests": [...]} and plain list formats
     if isinstance(data, list):
         tests = data
     elif isinstance(data, dict):
@@ -43,7 +36,7 @@ def generate_html_test_report(json_path, output_html_path, title="AI Cooking Ass
     failed = sum(1 for t in tests if t.get("status") == "failed")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Determine banner text and color
+    # Determine banner
     if failed == 0 and total > 0:
         summary_banner = "✅ All tests passed successfully!"
         banner_color = "green"
@@ -54,28 +47,17 @@ def generate_html_test_report(json_path, output_html_path, title="AI Cooking Ass
         summary_banner = "No tests found."
         banner_color = "gray"
 
-    # Build HTML
+    # Build HTML head
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{title}</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 2em; background-color: #fafafa; }}
-        h1 {{ color: #333; }}
-        h2.banner {{ color: {banner_color}; }}
-        table {{ border-collapse: collapse; width: 100%; }}
-        th, td {{ border: 1px solid #ccc; padding: 8px; text-align: left; }}
-        th {{ background: #eee; }}
-        .passed {{ color: green; font-weight: bold; }}
-        .failed {{ color: red; font-weight: bold; }}
-        .summary {{ margin-bottom: 1em; font-size: 1.1em; }}
-        footer {{ margin-top: 2em; font-size: 0.9em; color: #666; }}
-    </style>
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
     <h1>{title}</h1>
-    <h2 class="banner">{summary_banner}</h2>
+    <h2 style='color:{banner_color}'>{summary_banner}</h2>
     <div class="summary">
         <strong>Generated:</strong> {timestamp}<br>
         <strong>Total Tests:</strong> {total} |
@@ -86,23 +68,58 @@ def generate_html_test_report(json_path, output_html_path, title="AI Cooking Ass
         <tr><th>Test Name</th><th>Status</th><th>Duration (s)</th></tr>
 """
 
+    # ✅ Collapsible rows logic goes here
     for test in tests:
         name = test.get("name", "Unnamed Test")
         status = test.get("status", "unknown")
         duration = test.get("duration", "-")
+        message = test.get("message", "")
+        error = test.get("error", "")
+        trace = test.get("trace", "")
         css_class = "passed" if status == "passed" else "failed"
-        html += f"<tr><td>{name}</td><td class='{css_class}'>{status}</td><td>{duration}</td></tr>"
 
-    html += f"""
+        # Build optional detail section
+        details = ""
+        if any([message, error, trace]):
+            details = f"""
+        <tr class="details"><td colspan="3">
+            <div class="detail-box">
+                {f"<p><b>Message:</b> {message}</p>" if message else ""}
+                {f"<p><b>Error:</b> {error}</p>" if error else ""}
+                {f"<pre>{trace}</pre>" if trace else ""}
+            </div>
+        </td></tr>
+        """
+
+        html += f"""
+        <tr class="summary-row" onclick="toggleDetails(this)">
+            <td>{name}</td>
+            <td class='{css_class}'>{status}</td>
+            <td>{duration}</td>
+        </tr>
+        {details}
+        """
+
+    # ✅ Add footer + toggle script before </body>
+    html += """
     </table>
     <footer>
         <p>Report generated automatically by the AI Cooking Assistant QA Suite.</p>
     </footer>
+
+    <script>
+    function toggleDetails(row){
+        let next = row.nextElementSibling;
+        if(next && next.classList.contains('details')){
+            next.style.display = next.style.display === 'none' ? 'table-row' : 'none';
+        }
+    }
+    </script>
 </body>
 </html>
 """
 
-    # Write output
+    # Write output file
     output_html_path.parent.mkdir(parents=True, exist_ok=True)
     output_html_path.write_text(html, encoding="utf-8")
     print(f"✅ HTML report generated at {output_html_path.resolve()}")
