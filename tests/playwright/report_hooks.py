@@ -37,36 +37,24 @@ def pytest_configure(config):
     config._ai_run_started_at = _now()
 
 
-def _get_test_category(item_or_nodeid) -> str:
-    """Extract category from test marker or node ID."""
-    # If it's an item (has markers), check for category marker first
-    if hasattr(item_or_nodeid, 'iter_markers'):
-        for marker in item_or_nodeid.iter_markers('category'):
-            if marker.args:
-                return marker.args[0]
-
-    # Otherwise treat as nodeid string
-    nodeid = item_or_nodeid if isinstance(item_or_nodeid, str) else item_or_nodeid.nodeid
-
-    # Fallback to file-based categorization
-    if "test_allergy_scenarios" in nodeid or "TestRestrictionScenarios" in nodeid or "TestAllergyAndDietaryConcerns" in nodeid:
-        return "🚫 Allergy/Restrictions"
+def _get_test_category(nodeid: str) -> str:
+    """Extract category from test node ID."""
+    if "test_allergy_scenarios" in nodeid or "TestRestrictionScenarios" in nodeid:
+        return "Allergy/Restrictions"
     elif "test_equipment_scenarios" in nodeid or "TestEquipmentScenarios" in nodeid:
-        return "🔧 Equipment"
+        return "Equipment"
     elif "test_ingredients_scenarios" in nodeid or "TestIngredientScenarios" in nodeid:
-        return "🍳 Ingredients"
+        return "Ingredients"
     elif "test_meal_suggestion_logic" in nodeid:
-        return "🍽️ Meal Suggestions"
-    elif "test_response_logic" in nodeid or "TestResponseQuality" in nodeid:
-        return "✅ Response Quality"
+        return "Meal Suggestions"
+    elif "test_response_logic" in nodeid:
+        return "Response Logic"
     elif "test_bias_logic" in nodeid or "TestBiasHandling" in nodeid:
-        return "⚖️ Bias Handling"
+        return "Bias Handling"
     elif "inventory_test" in nodeid:
-        return "📦 Inventory"
-    elif "TestEdgeCases" in nodeid:
-        return "🔍 Edge Cases"
-    elif "selenium" in nodeid or "playwright" in nodeid or "TestBasicFunctionality" in nodeid:
-        return "🎭 UI Tests"
+        return "Inventory"
+    elif "selenium" in nodeid or "playwright" in nodeid:
+        return "UI Tests"
     else:
         return "Other"
 
@@ -452,58 +440,6 @@ def pytest_html_results_summary(prefix, summary, postfix):
         color: #374151;
       }}
 
-      /* Category Badge Styling */
-      .category-badge {{
-        display: inline-block;
-        background: #3b82f6;
-        color: white;
-        padding: 3px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
-        margin-right: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        white-space: nowrap;
-      }}
-
-      .test-name {{
-        font-weight: 500;
-        color: #374151;
-      }}
-
-      /* Test Steps Summary in DETAILS Column */
-      .test-steps-summary {{
-        font-size: 12px;
-        line-height: 1.6;
-      }}
-
-      .step-list {{
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }}
-
-      .step-list li {{
-        padding: 4px 0;
-        color: #374151;
-        display: flex;
-        align-items: flex-start;
-      }}
-
-      .step-icon {{
-        color: #3b82f6;
-        margin-right: 6px;
-        font-weight: 600;
-        flex-shrink: 0;
-      }}
-
-      .more-steps {{
-        color: #6b7280;
-        font-style: italic;
-        padding-left: 16px;
-      }}
-
       /* Duration Styling */
       #results-table .col-duration {{
         color: #6b7280;
@@ -776,10 +712,7 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
 
     # Track category statistics (use global variable for access in summary hook)
     global _CATEGORY_STATS
-    category = _get_test_category(item)
-
-    # Store category on report object for later use
-    rep.test_category = category
+    category = _get_test_category(rep.nodeid)
 
     if category not in _CATEGORY_STATS:
         _CATEGORY_STATS[category] = {"passed": 0, "failed": 0, "skipped": 0, "error": 0}
@@ -820,87 +753,22 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
         fp.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def _extract_steps_from_log(log_text: str, max_steps: int = 5) -> str:
-    """Extract step-by-step details from captured log output."""
-    if not log_text:
-        return ""
-
-    # Look for logger.info lines with step indicators
-    import re
-    lines = log_text.split('\n')
-    steps = []
-
-    for line in lines:
-        # Match INFO logger lines that contain steps
-        if 'INFO' in line and any(indicator in line for indicator in ['✓', 'Step', 'TC-', 'PASSED', 'FAILED', 'Starting']):
-            # Extract the actual message (after the last colon)
-            parts = line.split('INFO', 1)
-            if len(parts) == 2:
-                # Remove file:line info and extract message
-                message = re.sub(r'^\s+\w+:\w+\.py:\d+\s+', '', parts[1])
-                message = message.strip()
-                if message and not message.startswith('['):
-                    steps.append(message)
-
-    if not steps:
-        return ""
-
-    # Build HTML list
-    html_steps = ['<div class="test-steps-summary"><ul class="step-list">']
-
-    # Show first max_steps
-    for step in steps[:max_steps]:
-        html_steps.append(f'<li><span class="step-icon">→</span> {escape(step)}</li>')
-
-    # Add "more" indicator if there are additional steps
-    if len(steps) > max_steps:
-        html_steps.append(f'<li class="more-steps">...and {len(steps) - max_steps} more</li>')
-
-    html_steps.append('</ul></div>')
-    return ''.join(html_steps)
-
-
-def pytest_html_results_table_header(cells):
-    """Swap DETAILS and DURATION column headers."""
-    if len(cells) >= 4:
-        cells[2], cells[3] = cells[3], cells[2]
-
-
 def pytest_html_results_table_row(report, cells):
     """
     Modify the test name cell to show human-readable names.
-    Also add category badge and extract steps for DETAILS column.
-    Swap DETAILS and DURATION columns so DETAILS comes first.
+    Also add category badge to the result cell.
     """
     # Transform the test name (second cell - testId)
     if len(cells) >= 2:
         nodeid = report.nodeid
         human_name = _humanize_test_name(nodeid)
-        category = getattr(report, 'test_category', _get_test_category(nodeid))
+        category = _get_test_category(nodeid)
 
         # Update the test name cell with human-readable name and category badge
         cells[1] = f'''<td class="col-testId">
-            <span class="category-badge">{escape(category)}</span>
             <span class="test-name">{escape(human_name)}</span>
+            <span class="category-badge">{escape(category)}</span>
         </td>'''
-
-    # Add steps to DETAILS column (col-links)
-    if len(cells) >= 4:
-        log_text = getattr(report, 'longreprtext', '') or ''
-        # Try to get captured log from sections
-        if hasattr(report, 'sections'):
-            for section_name, section_content in report.sections:
-                if 'log' in section_name.lower():
-                    log_text = section_content
-                    break
-
-        steps_html = _extract_steps_from_log(log_text)
-        if steps_html:
-            cells[3] = f'<td class="col-links">{steps_html}</td>'
-
-    # Swap DETAILS (cell 3) and DURATION (cell 2) so DETAILS comes before DURATION
-    if len(cells) >= 4:
-        cells[2], cells[3] = cells[3], cells[2]
 
 
 def pytest_html_results_table_html(report, data):

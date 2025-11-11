@@ -2,7 +2,9 @@ from playwright.sync_api import sync_playwright
 import time
 import pytest
 
-pytestmark = pytest.mark.skip(reason="Playwright testing is temporarily disabled")
+# Original tests - superseded by new Page Object Model framework in test_functional_scenarios.py and test_ui_interactions.py
+# These tests use a different approach and are kept for reference but skipped in favor of the new architecture
+pytestmark = pytest.mark.skip(reason="Superseded by new POM framework tests")
 
 
 def setup_browser(p):
